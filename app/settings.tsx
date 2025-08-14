@@ -19,6 +19,8 @@ import { useStorageAccessFramework } from '../hooks/useStorageAccessFramework';
 import { useTranslation } from '../hooks/useTranslation';
 import { version } from '../package.json';
 import { Release, updateService } from '../services/updateService';
+import fs from 'fs'; 
+import path from 'path'; 
 
 
 export default function SettingsScreen() {
@@ -700,7 +702,26 @@ export default function SettingsScreen() {
                 </View>
             </Modal>
         </View>
+        
+        <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('Version')}</Text>
+            <Text style={styles.sectionDescription}>
+                {getAppVersion()}
+            </Text>
+       </View>
     );
+}
+
+function getAppVersion(): string {
+    const filePath = path.join(__dirname, 'app.json'); // Using the npm app.json
+    try {
+        const data = fs.readFileSync(filePath, 'utf-8');
+        const json = JSON.parse(data);
+        return json.expo.version; 
+    } catch (error) {
+        console.error('Error reading or parsing app.json:', error);
+        return "unknown";
+    }
 }
 
 // Helper functions for language names
